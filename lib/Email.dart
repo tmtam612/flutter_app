@@ -20,7 +20,7 @@ class Email {
   factory Email.fromJson(Map<String, dynamic> json) {
     return Email(
       email: json['email'] as String,
-      id: int.parse(json['id']) as int,
+      id: int.parse(json['id']),
     );
   }
 }

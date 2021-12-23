@@ -24,43 +24,54 @@ class DemoPage extends StatefulWidget {
 
 class _DemoState extends State<DemoPage> {
   final emailController = TextEditingController();
-  final HttpService httpService = HttpService();
+  List<Email> emails = [];
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    emailController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: httpService.fetchEmail(),
-        builder: (BuildContext context, AsyncSnapshot<List<Email>> snapshot) {
-          List<Email> emails = snapshot.hasData ? snapshot.data : [];
-          return Column(children: [
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.only(top: 10.0),
-                children: emails
-                    .map((Email item) => ListTile(
-                          title: Text(item.email),
-                        ))
-                    .toList(),
+    return Column(children: [
+      Expanded(
+        child: ListView(
+          padding: const EdgeInsets.only(top: 10.0),
+          children: emails
+              .map((Email item) => ListTile(
+                    title: Text(item.email),
+                  ))
+              .toList(),
+        ),
+      ),
+      Container(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        child: TextField(
+          controller: emailController,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: const BorderRadius.all(
+                const Radius.circular(30),
               ),
             ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(30),
-                      ),
-                    ),
-                    labelText: "Enter your Name"),
-                onSubmitted: (value) {},
-              ),
-            ),
-            RaisedButton(
-              onPressed: () => {},
-              child: Text('Submit'),
-            )
-          ]);
-        });
+            labelText: "Enter your Name",
+          ),
+        ),
+      ),
+      RaisedButton(
+        onPressed: () {
+          Email email = Email(
+            email: emailController.text,
+            id: 1,
+          );
+          this.setState(() {
+            emails.add(email);
+          });
+        },
+        child: Text('Submit'),
+      )
+    ]);
   }
 }
